@@ -121,19 +121,17 @@ export default function Home() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(false);
+  const [cameraFeeds, setCameraFeeds] = useState([
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+  ]);
   const [useCamera, setUseCamera] = useState(false);
-
-  const cameraFeeds = [
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-  ]; // Replace with your actual camera identifiers
-
 
   useEffect(() => {
     const getCameraPermission = async () => {
