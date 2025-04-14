@@ -264,7 +264,7 @@ export default function Home() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle> 📊 ECS</CardTitle>
-            <CardDescription>Overview of sensor data</CardDescription>
+            <CardDescription>Environmental Control System</CardDescription>
           </div>
             <Button variant="outline" size="icon" onClick={toggleTheme}>
                 {theme ? <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"/> :
@@ -448,3 +448,4 @@ export default function Home() {
     </div>
   );
 }
+
