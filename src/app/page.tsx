@@ -213,7 +213,7 @@ export default function Home() {
   const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
 
   return (
-    <div className="flex flex-col p-4 gap-4 max-w-7xl mx-auto">
+    <div className="flex flex-col p-4 gap-4 max-w-5xl md:max-w-5xl mx-auto">
       <Toaster/>
 
       <Card>
