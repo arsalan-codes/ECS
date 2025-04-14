@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSensorData } from '@/services/sensor';
 import { Icons } from '@/components/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { getFanSpeed, setFanSpeed } from '@/services/fan';
@@ -22,6 +22,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const chartConfig = {
   temperature: {
@@ -100,6 +101,32 @@ export default function Home() {
         { time: '21:00', temperature: 23, humidity: 63, oxygen: 94 },
         { time: '24:00', temperature: 22, humidity: 61, oxygen: 95 },
     ]);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({video: true});
+        setHasCameraPermission(true);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Access Denied',
+          description: 'Please enable camera permissions in your browser settings to use this app.',
+        });
+      }
+    };
+
+    getCameraPermission();
+  }, []);
 
 
   useEffect(() => {
@@ -223,6 +250,27 @@ export default function Home() {
       </Card>
 
       <Card>
+          <CardHeader>
+              <CardTitle>Camera Monitoring</CardTitle>
+              <CardDescription>Live camera feed</CardDescription>
+          </CardHeader>
+          <CardContent>
+              <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+
+              { !(hasCameraPermission) && (
+                  <Alert variant="destructive">
+                            <AlertTitle>Camera Access Required</AlertTitle>
+                            <AlertDescription>
+                              Please allow camera access to use this feature.
+                            </AlertDescription>
+                    </Alert>
+              )
+              }
+          </CardContent>
+      </Card>
+
+
+      <Card>
         <CardHeader>
           <CardTitle>Historical Data Visualization</CardTitle>
           <CardDescription>Visual representation of sensor data over time</CardDescription>
@@ -244,3 +292,4 @@ export default function Home() {
     </div>
   );
 }
+
