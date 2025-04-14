@@ -17,6 +17,8 @@ const ToastViewport = React.forwardRef<
     ref={ref}
     className={cn(
       "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
+      "sm:items-end", // Align to the end (right) on small screens and up
+      "top-0 left-1/2 transform -translate-x-1/2 sm:left-auto sm:transform-none", // Center and position at the top for xs
       className
     )}
     {...props}
