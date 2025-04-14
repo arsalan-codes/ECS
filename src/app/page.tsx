@@ -105,6 +105,18 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
 
+    const cameraFeeds = [
+        'camera1',
+        'camera2',
+        'camera3',
+        'camera4',
+        'camera5',
+        'camera6',
+        'camera7',
+        'camera8',
+    ]; // Replace with your actual camera identifiers
+
+
   useEffect(() => {
     const getCameraPermission = async () => {
       try {
@@ -252,10 +264,15 @@ export default function Home() {
       <Card>
           <CardHeader>
               <CardTitle>Camera Monitoring</CardTitle>
-              <CardDescription>Live camera feed</CardDescription>
+              <CardDescription>Live camera feeds</CardDescription>
           </CardHeader>
           <CardContent>
-              <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+              {cameraFeeds.map((camera, index) => (
+                  <div key={index} className="mb-4">
+                      <p>Camera {index + 1}</p>
+                      <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+                  </div>
+              ))}
 
               { !(hasCameraPermission) && (
                   <Alert variant="destructive">
@@ -292,4 +309,3 @@ export default function Home() {
     </div>
   );
 }
-
