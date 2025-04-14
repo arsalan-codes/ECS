@@ -112,7 +112,7 @@ const AnimatedBarChart = ({value, label, color}: { value: number, label: string,
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between text-sm">
         <span>{label}</span>
-        <span>{value}%</span>
+        <span>{Math.round(value)}%</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div
@@ -448,4 +448,5 @@ export default function Home() {
     </div>
   );
 }
+
 
