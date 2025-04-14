@@ -1,3 +1,4 @@
+
 /**
  * Represents sensor data for temperature, humidity and oxygen.
  */
@@ -14,6 +15,10 @@ export interface SensorData {
    * The oxygen level.
    */
   oxygen: number;
+    /**
+     * The light intensity in Lux.
+     */
+    lux?: number;
 }
 
 /**
@@ -27,5 +32,6 @@ export async function getSensorData(): Promise<SensorData> {
     temperatureCelsius: 25,
     humidity: 60,
     oxygen: 95,
+        lux: 3000,
   };
 }

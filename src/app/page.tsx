@@ -24,6 +24,7 @@ import {
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
+import {analyzeLightData} from '@/ai/flows/analyze-light-data';
 
 const chartConfig = {
   temperature: {
@@ -40,9 +41,9 @@ const chartConfig = {
   },
 };
 
-function Sensors({temperature, humidity, oxygen}: { temperature: number, humidity: number, oxygen: number }) {
+function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, humidity: number, oxygen: number, lux: number }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader>
           <CardTitle>🌡️ Temperature</CardTitle>
@@ -79,6 +80,18 @@ function Sensors({temperature, humidity, oxygen}: { temperature: number, humidit
           </div>
         </CardContent>
       </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>💡 Light Intensity</CardTitle>
+            <CardDescription>Current light intensity in Lux</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <Icons.lightbulb className="h-4 w-4"/>
+              {lux} Lux
+            </div>
+          </CardContent>
+        </Card>
     </div>
   );
 }
@@ -87,9 +100,12 @@ export default function Home() {
   const [temperature, setTemperature] = useState<number>(0);
   const [humidity, setHumidity] = useState<number>(0);
   const [oxygen, setOxygen] = useState<number>(0);
+    const [lux, setLux] = useState<number>(0);
   const [fanSpeed, setFanSpeedState] = useState<number>(0);
   const [lightStatus, setLightStatusState] = useState<boolean>(false);
   const [aiRecommendation, setAiRecommendation] = useState<{ recommendedFanSpeed: number; explanation: string; } | null>(null);
+    const [lightRecommendation, setLightRecommendation] = useState<{ recommendedLightStatus: boolean; explanation: string; } | null>(null);
+
   const {toast} = useToast();
   const [historicalData, setHistoricalData] = useState([
     {time: '00:00', temperature: 22, humidity: 60, oxygen: 95},
@@ -104,7 +120,7 @@ export default function Home() {
   ]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(true);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(false);
   const [useCamera, setUseCamera] = useState(false);
 
   const cameraFeeds = [
@@ -154,6 +170,7 @@ export default function Home() {
       setTemperature(sensorData.temperatureCelsius);
       setHumidity(sensorData.humidity);
       setOxygen(sensorData.oxygen);
+        setLux(sensorData.lux || 0);
 
       const fanSettings = await getFanSpeed();
       setFanSpeedState(fanSettings.speed);
@@ -163,6 +180,9 @@ export default function Home() {
 
       const aiOutput = await analyzeSensorData({});
       setAiRecommendation(aiOutput);
+
+        const lightOutput = await analyzeLightData({ lux: sensorData.lux || 0 });
+        setLightRecommendation(lightOutput);
     };
 
     fetchData();
@@ -208,50 +228,61 @@ export default function Home() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle> 🍃 Sensors</CardTitle>
-          <CardDescription>Real-time sensor data</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen}/>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle> ⚙️ Fan Speed Control</CardTitle>
-            <CardDescription>Adjust the fan speed manually</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-2">
-              <Slider
-                defaultValue={[fanSpeed]}
-                max={100}
-                step={1}
-                onValueChange={handleFanSpeedChange}
-              />
-              <p>Current speed: {fanSpeed}%</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle> 💡 Lighting Control</CardTitle>
-            <CardDescription>Turn lights on or off remotely</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span>Lights are: {lightStatus ? 'On' : 'Off'}</span>
-              <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       <Accordion type="single" collapsible>
+
+        <AccordionItem value="sensors">
+          <AccordionTrigger> 🍃 Sensors</AccordionTrigger>
+          <AccordionContent>
+            <Card>
+              <CardHeader>
+                <CardTitle> 🍃 Sensors</CardTitle>
+                <CardDescription>Real-time sensor data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} lux={lux}/>
+              </CardContent>
+            </Card>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="fan-lighting-control">
+          <AccordionTrigger> ⚙️ Fan and Lighting Control</AccordionTrigger>
+          <AccordionContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle> ⚙️ Fan Speed Control</CardTitle>
+                  <CardDescription>Adjust the fan speed manually</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2">
+                    <Slider
+                      defaultValue={[fanSpeed]}
+                      max={100}
+                      step={1}
+                      onValueChange={handleFanSpeedChange}
+                    />
+                    <p>Current speed: {fanSpeed}%</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle> 💡 Lighting Control</CardTitle>
+                  <CardDescription>Turn lights on or off remotely</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <span>Lights are: {lightStatus ? 'On' : 'Off'}</span>
+                    <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
         <AccordionItem value="ai-optimization">
           <AccordionTrigger> 🤖 AI-Powered Optimization</AccordionTrigger>
           <AccordionContent>
@@ -269,6 +300,14 @@ export default function Home() {
                 ) : (
                   <p>Loading AI recommendation...</p>
                 )}
+                  {lightRecommendation ? (
+                      <div className="flex flex-col gap-2">
+                        <Badge variant="secondary">Recommended Light Status: {lightRecommendation.recommendedLightStatus ? 'On' : 'Off'}</Badge>
+                        <p>{lightRecommendation.explanation}</p>
+                      </div>
+                  ) : (
+                      <p>Loading AI light recommendation...</p>
+                  )}
               </CardContent>
             </Card>
           </AccordionContent>
