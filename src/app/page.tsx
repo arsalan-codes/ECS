@@ -38,6 +38,49 @@ const chartConfig = {
   },
 };
 
+function Sensors({ temperature, humidity, oxygen }: { temperature: number, humidity: number, oxygen: number }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Temperature</CardTitle>
+          <CardDescription>Current temperature in Celsius</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <Icons.thermometer className="h-4 w-4" />
+            {temperature}°C
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Humidity</CardTitle>
+          <CardDescription>Current humidity percentage</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <Icons.wind className="h-4 w-4" />
+            {humidity}%
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Oxygen</CardTitle>
+          <CardDescription>Current oxygen level</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <Icons.wind className="h-4 w-4" />
+            {oxygen}%
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function Home() {
   const [temperature, setTemperature] = useState<number>(0);
   const [humidity, setHumidity] = useState<number>(0);
@@ -98,47 +141,27 @@ export default function Home() {
     { time: '24:00', temperature: 22, humidity: 61, oxygen: 95 },
   ];
 
+  const avgTemperature = historicalData.reduce((acc, data) => acc + data.temperature, 0) / historicalData.length;
+  const avgHumidity = historicalData.reduce((acc, data) => acc + data.humidity, 0) / historicalData.length;
+  const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
+
   return (
     <div className="flex flex-col p-4 gap-4">
       <Toaster />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Temperature</CardTitle>
-            <CardDescription>Current temperature in Celsius</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Icons.thermometer className="h-4 w-4" />
-              {temperature}°C
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Humidity</CardTitle>
-            <CardDescription>Current humidity percentage</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Icons.wind className="h-4 w-4" />
-              {humidity}%
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Oxygen</CardTitle>
-            <CardDescription>Current oxygen level</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Icons.wind className="h-4 w-4" />
-              {oxygen}%
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Dashboard</CardTitle>
+          <CardDescription>Overview of sensor data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>
+            Average Temperature: {avgTemperature.toFixed(2)}°C, Average Humidity: {avgHumidity.toFixed(2)}%, Average Oxygen: {avgOxygen.toFixed(2)}%
+          </p>
+        </CardContent>
+      </Card>
+
+      <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
@@ -212,4 +235,3 @@ export default function Home() {
     </div>
   );
 }
-
