@@ -1,9 +1,7 @@
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
-import {Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger} from '@/components/ui/sidebar';
 import {Icons} from '@/components/icons';
-import Link from 'next/link';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,31 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fa" dir="rtl">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SidebarProvider>
-          <Sidebar collapsible="icon">
-            <SidebarContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <Link href="/">
-                    <SidebarMenuButton>
-                      <Icons.layoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </SidebarMenuButton>
-                  </Link>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarContent>
-            <SidebarFooter>
-              <p className="text-xs text-muted-foreground">
-                Powered by Firebase Studio
-              </p>
-            </SidebarFooter>
-          </Sidebar>
           {children}
-        </SidebarProvider>
       </body>
     </html>
   );
 }
+
