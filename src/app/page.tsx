@@ -25,6 +25,8 @@ import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAx
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
 import {analyzeLightData} from '@/ai/flows/analyze-light-data';
+import {Tooltip as ReactTooltip} from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css'
 
 const chartConfig = {
   temperature: {
@@ -95,6 +97,33 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
     </div>
   );
 }
+
+const AnimatedBarChart = ({value, label, color}: { value: number, label: string, color: string }) => {
+  const barRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    if (barRef.current) {
+      setWidth(value);
+    }
+  }, [value]);
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center justify-between text-sm">
+        <span>{label}</span>
+        <span>{value}%</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+        <div
+          ref={barRef}
+          className="bg-primary h-2.5 rounded-full"
+          style={{width: `${width}%`, backgroundColor: color, transition: 'width 0.5s ease-in-out'}}
+        ></div>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
   const [temperature, setTemperature] = useState<number>(0);
@@ -232,7 +261,7 @@ export default function Home() {
       <Toaster/>
 
       <Card>
-        <CardHeader className="grid grid-cols-1 md:grid-cols-2 items-center justify-between gap-2">
+        <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle> 📊 Dashboard</CardTitle>
             <CardDescription>Overview of sensor data</CardDescription>
@@ -242,9 +271,9 @@ export default function Home() {
           </div>
         </CardHeader>
         <CardContent>
-          <p>
-            Average Temperature: {avgTemperature.toFixed(2)}°C, Average Humidity: {avgHumidity.toFixed(2)}%, Average Oxygen: {avgOxygen.toFixed(2)}%
-          </p>
+          <AnimatedBarChart value={avgTemperature} label="Average Temperature" color="hsl(var(--chart-1))"/>
+          <AnimatedBarChart value={avgHumidity} label="Average Humidity" color="hsl(var(--chart-2))"/>
+          <AnimatedBarChart value={avgOxygen} label="Average Oxygen" color="hsl(var(--chart-3))"/>
         </CardContent>
       </Card>
 
@@ -417,3 +446,4 @@ export default function Home() {
     </div>
   );
 }
+
