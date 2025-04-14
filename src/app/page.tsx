@@ -89,6 +89,18 @@ export default function Home() {
   const [lightStatus, setLightStatusState] = useState<boolean>(false);
   const [aiRecommendation, setAiRecommendation] = useState<{ recommendedFanSpeed: number; explanation: string; } | null>(null);
   const { toast } = useToast();
+    const [historicalData, setHistoricalData] = useState([
+        { time: '00:00', temperature: 22, humidity: 60, oxygen: 95 },
+        { time: '03:00', temperature: 23, humidity: 62, oxygen: 94 },
+        { time: '06:00', temperature: 24, humidity: 64, oxygen: 93 },
+        { time: '09:00', temperature: 23, humidity: 63, oxygen: 94 },
+        { time: '12:00', temperature: 25, humidity: 65, oxygen: 92 },
+        { time: '15:00', temperature: 26, humidity: 66, oxygen: 91 },
+        { time: '18:00', temperature: 24, humidity: 64, oxygen: 93 },
+        { time: '21:00', temperature: 23, humidity: 63, oxygen: 94 },
+        { time: '24:00', temperature: 22, humidity: 61, oxygen: 95 },
+    ]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,17 +141,6 @@ export default function Home() {
     });
   };
 
-  const historicalData = [
-    { time: '00:00', temperature: 22, humidity: 60, oxygen: 95 },
-    { time: '03:00', temperature: 23, humidity: 62, oxygen: 94 },
-    { time: '06:00', temperature: 24, humidity: 64, oxygen: 93 },
-    { time: '09:00', temperature: 23, humidity: 63, oxygen: 94 },
-    { time: '12:00', temperature: 25, humidity: 65, oxygen: 92 },
-    { time: '15:00', temperature: 26, humidity: 66, oxygen: 91 },
-    { time: '18:00', temperature: 24, humidity: 64, oxygen: 93 },
-    { time: '21:00', temperature: 23, humidity: 63, oxygen: 94 },
-    { time: '24:00', temperature: 22, humidity: 61, oxygen: 95 },
-  ];
 
   const avgTemperature = historicalData.reduce((acc, data) => acc + data.temperature, 0) / historicalData.length;
   const avgHumidity = historicalData.reduce((acc, data) => acc + data.humidity, 0) / historicalData.length;
@@ -161,7 +162,15 @@ export default function Home() {
         </CardContent>
       </Card>
 
-      <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} />
+        <Card>
+            <CardHeader>
+                <CardTitle>Sensors</CardTitle>
+                <CardDescription>Real-time sensor data</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} />
+            </CardContent>
+        </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
