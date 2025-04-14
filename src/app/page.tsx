@@ -370,6 +370,20 @@ export default function Home() {
                           fill={chartConfig.oxygen.color}/>
                   </AreaChart>
                 </ChartContainer>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>💡 Management Ideas from AI</CardTitle>
+                    <CardDescription>AI analysis of sensor data for poultry farm management</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Based on historical data, AI suggests:</p>
+                    <ul>
+                      <li>Optimizing feeding schedules during peak temperature hours.</li>
+                      <li>Adjusting ventilation to maintain consistent humidity levels.</li>
+                      <li>Monitoring oxygen levels during nighttime to prevent hypoxia.</li>
+                    </ul>
+                  </CardContent>
+                </Card>
               </CardContent>
             </Card>
           </AccordionContent>
