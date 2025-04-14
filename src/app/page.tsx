@@ -232,10 +232,14 @@ export default function Home() {
       <Toaster/>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle> 📊 Dashboard</CardTitle>
+        <CardHeader className="grid grid-cols-1 md:grid-cols-2 items-center justify-between gap-2">
+          <div>
+            <CardTitle> 📊 Dashboard</CardTitle>
+            <CardDescription>Overview of sensor data</CardDescription>
+          </div>
+          <div className="flex justify-end">
             <Switch checked={theme} onCheckedChange={toggleTheme} />
-          <CardDescription>Overview of sensor data</CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <p>
