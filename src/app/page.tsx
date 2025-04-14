@@ -45,7 +45,7 @@ function Sensors({temperature, humidity, oxygen}: { temperature: number, humidit
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Temperature</CardTitle>
+          <CardTitle>🌡️ Temperature</CardTitle>
           <CardDescription>Current temperature in Celsius</CardDescription>
         </CardHeader>
         <CardContent>
@@ -57,7 +57,7 @@ function Sensors({temperature, humidity, oxygen}: { temperature: number, humidit
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Humidity</CardTitle>
+          <CardTitle>💧 Humidity</CardTitle>
           <CardDescription>Current humidity percentage</CardDescription>
         </CardHeader>
         <CardContent>
@@ -69,7 +69,7 @@ function Sensors({temperature, humidity, oxygen}: { temperature: number, humidit
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Oxygen</CardTitle>
+          <CardTitle>💨 Oxygen</CardTitle>
           <CardDescription>Current oxygen level</CardDescription>
         </CardHeader>
         <CardContent>
@@ -108,14 +108,14 @@ export default function Home() {
   const [useCamera, setUseCamera] = useState(false);
 
   const cameraFeeds = [
-    'camera1',
-    'camera2',
-    'camera3',
-    'camera4',
-    'camera5',
-    'camera6',
-    'camera7',
-    'camera8',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
+    'https://picsum.photos/400/300',
   ]; // Replace with your actual camera identifiers
 
 
@@ -198,7 +198,7 @@ export default function Home() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Dashboard</CardTitle>
+          <CardTitle> 📊 Dashboard</CardTitle>
           <CardDescription>Overview of sensor data</CardDescription>
         </CardHeader>
         <CardContent>
@@ -210,7 +210,7 @@ export default function Home() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Sensors</CardTitle>
+          <CardTitle> 🍃 Sensors</CardTitle>
           <CardDescription>Real-time sensor data</CardDescription>
         </CardHeader>
         <CardContent>
@@ -221,7 +221,7 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Fan Speed Control</CardTitle>
+            <CardTitle> ⚙️ Fan Speed Control</CardTitle>
             <CardDescription>Adjust the fan speed manually</CardDescription>
           </CardHeader>
           <CardContent>
@@ -239,7 +239,7 @@ export default function Home() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Lighting Control</CardTitle>
+            <CardTitle> 💡 Lighting Control</CardTitle>
             <CardDescription>Turn lights on or off remotely</CardDescription>
           </CardHeader>
           <CardContent>
@@ -253,11 +253,11 @@ export default function Home() {
 
       <Accordion type="single" collapsible>
         <AccordionItem value="ai-optimization">
-          <AccordionTrigger>AI-Powered Optimization</AccordionTrigger>
+          <AccordionTrigger> 🤖 AI-Powered Optimization</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle>AI-Powered Optimization</CardTitle>
+                <CardTitle> 🤖 AI-Powered Optimization</CardTitle>
                 <CardDescription>AI recommendation for optimal fan speed</CardDescription>
               </CardHeader>
               <CardContent>
@@ -275,11 +275,11 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="camera-monitoring">
-          <AccordionTrigger>Camera Monitoring</AccordionTrigger>
+          <AccordionTrigger> 📷 Camera Monitoring</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle>Camera Monitoring</CardTitle>
+                <CardTitle> 📷 Camera Monitoring</CardTitle>
                 <CardDescription>Live camera feeds</CardDescription>
               </CardHeader>
               <CardContent>
@@ -287,10 +287,10 @@ export default function Home() {
                   <span>Use Camera:</span>
                   <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
                 </div>
-                {cameraFeeds.map((camera, index) => (
+                {useCamera && cameraFeeds.map((camera, index) => (
                   <div key={index} className="mb-4">
                     <p>Camera {index + 1}</p>
-                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted/>
+                    <img src={camera} className="w-full aspect-video rounded-md" />
                   </div>
                 ))}
 
@@ -309,11 +309,11 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="historical-data">
-          <AccordionTrigger>Historical Data Visualization</AccordionTrigger>
+          <AccordionTrigger> 📈 Historical Data Visualization</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle>Historical Data Visualization</CardTitle>
+                <CardTitle> 📈 Historical Data Visualization</CardTitle>
                 <CardDescription>Visual representation of sensor data over time</CardDescription>
               </CardHeader>
               <CardContent>
