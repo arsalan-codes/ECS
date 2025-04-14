@@ -205,18 +205,36 @@ export default function Home() {
     });
   };
 
-
   const avgTemperature = historicalData.reduce((acc, data) => acc + data.temperature, 0) / historicalData.length;
   const avgHumidity = historicalData.reduce((acc, data) => acc + data.humidity, 0) / historicalData.length;
   const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
+
+    const [theme, setTheme] = useState(typeof window !== 'undefined' ? localStorage.getItem('theme') === 'dark' : false);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (theme) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(!theme);
+    };
 
   return (
     <div className="flex flex-col p-4 gap-4 max-w-5xl md:max-w-5xl mx-auto">
       <Toaster/>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle> 📊 Dashboard</CardTitle>
+            <Switch checked={theme} onCheckedChange={toggleTheme} />
           <CardDescription>Overview of sensor data</CardDescription>
         </CardHeader>
         <CardContent>
