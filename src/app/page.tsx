@@ -27,6 +27,8 @@ import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/co
 import {analyzeLightData} from '@/ai/flows/analyze-light-data';
 import {Button} from "@/components/ui/button";
 import {Sun, Moon} from "lucide-react";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
 
 const chartConfig = {
   temperature: {
@@ -122,6 +124,50 @@ const AnimatedBarChart = ({value, label, color}: { value: number, label: string,
         ></div>
       </div>
     </div>
+  );
+};
+
+const AIInteraction = () => {
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setQuestion(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setAnswer(null);
+    // Simulate an AI response delay
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setAnswer('This is a simulated AI response.');
+    setLoading(false);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>🤖 AI Assistant</CardTitle>
+        <CardDescription>Ask questions and get AI-powered insights.</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <Textarea
+          placeholder="Ask me anything about your farm data..."
+          value={question}
+          onChange={handleQuestionChange}
+          className="resize-none"
+        />
+        <Button onClick={handleSubmit} disabled={loading}>
+          {loading ? 'Loading...' : 'Get Answer'}
+        </Button>
+        {answer && (
+          <div className="rounded-md border p-4">
+            <p>{answer}</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
@@ -238,23 +284,6 @@ export default function Home() {
   const avgHumidity = historicalData.reduce((acc, data) => acc + data.humidity, 0) / historicalData.length;
   const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
 
-    const [theme, setTheme] = useState(typeof window !== 'undefined' ? localStorage.getItem('theme') === 'dark' : false);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            if (theme) {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-    }, [theme]);
-
-    const toggleTheme = () => {
-        setTheme(!theme);
-    };
 
   return (
     <div className="flex flex-col p-4 gap-4 max-w-5xl md:max-w-5xl mx-auto">
@@ -362,6 +391,13 @@ export default function Home() {
           </AccordionContent>
         </AccordionItem>
 
+          <AccordionItem value="ai-assistant">
+            <AccordionTrigger> 🗣️ AI Assistant</AccordionTrigger>
+            <AccordionContent>
+              <AIInteraction />
+            </AccordionContent>
+          </AccordionItem>
+
         <AccordionItem value="camera-monitoring">
           <AccordionTrigger> 📷 Camera Monitoring</AccordionTrigger>
           <AccordionContent>
@@ -443,4 +479,3 @@ export default function Home() {
     </div>
   );
 }
-
