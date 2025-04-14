@@ -393,7 +393,7 @@ export default function Home() {
                   ) : (
                       <p>Loading AI light recommendation...</p>
                   )}
-                        <AIInteraction />
+                                <AIInteraction />
               </CardContent>
             </Card>
           </AccordionContent>
@@ -480,4 +480,5 @@ export default function Home() {
     </div>
   );
 }
+
 
