@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/chart";
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
 
 const chartConfig = {
   temperature: {
@@ -103,7 +104,7 @@ export default function Home() {
   ]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(true);
   const [useCamera, setUseCamera] = useState(false);
 
   const cameraFeeds = [
@@ -250,76 +251,91 @@ export default function Home() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>AI-Powered Optimization</CardTitle>
-          <CardDescription>AI recommendation for optimal fan speed</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {aiRecommendation ? (
-            <div className="flex flex-col gap-2">
-              <Badge variant="secondary">Recommended Fan Speed: {aiRecommendation.recommendedFanSpeed}%</Badge>
-              <p>{aiRecommendation.explanation}</p>
-            </div>
-          ) : (
-            <p>Loading AI recommendation...</p>
-          )}
-        </CardContent>
-      </Card>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="ai-optimization">
+          <AccordionTrigger>AI-Powered Optimization</AccordionTrigger>
+          <AccordionContent>
+            <Card>
+              <CardHeader>
+                <CardTitle>AI-Powered Optimization</CardTitle>
+                <CardDescription>AI recommendation for optimal fan speed</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {aiRecommendation ? (
+                  <div className="flex flex-col gap-2">
+                    <Badge variant="secondary">Recommended Fan Speed: {aiRecommendation.recommendedFanSpeed}%</Badge>
+                    <p>{aiRecommendation.explanation}</p>
+                  </div>
+                ) : (
+                  <p>Loading AI recommendation...</p>
+                )}
+              </CardContent>
+            </Card>
+          </AccordionContent>
+        </AccordionItem>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Camera Monitoring</CardTitle>
-          <CardDescription>Live camera feeds</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between mb-4">
-            <span>Use Camera:</span>
-            <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
-          </div>
-          {cameraFeeds.map((camera, index) => (
-            <div key={index} className="mb-4">
-              <p>Camera {index + 1}</p>
-              <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted/>
-            </div>
-          ))}
+        <AccordionItem value="camera-monitoring">
+          <AccordionTrigger>Camera Monitoring</AccordionTrigger>
+          <AccordionContent>
+            <Card>
+              <CardHeader>
+                <CardTitle>Camera Monitoring</CardTitle>
+                <CardDescription>Live camera feeds</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <span>Use Camera:</span>
+                  <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
+                </div>
+                {cameraFeeds.map((camera, index) => (
+                  <div key={index} className="mb-4">
+                    <p>Camera {index + 1}</p>
+                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted/>
+                  </div>
+                ))}
 
-          {useCamera && !(hasCameraPermission) && (
-            <Alert variant="destructive">
-              <AlertTitle>Camera Access Required</AlertTitle>
-              <AlertDescription>
-                Please allow camera access to use this feature.
-              </AlertDescription>
-            </Alert>
-          )
-          }
-        </CardContent>
-      </Card>
+                {useCamera && !(hasCameraPermission) && (
+                  <Alert variant="destructive">
+                    <AlertTitle>Camera Access Required</AlertTitle>
+                    <AlertDescription>
+                      Please allow camera access to use this feature.
+                    </AlertDescription>
+                  </Alert>
+                )
+                }
+              </CardContent>
+            </Card>
+          </AccordionContent>
+        </AccordionItem>
 
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Historical Data Visualization</CardTitle>
-          <CardDescription>Visual representation of sensor data over time</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <AreaChart data={historicalData} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
-              <CartesianGrid strokeDasharray="3 3"/>
-              <XAxis dataKey="time"/>
-              <YAxis/>
-              <Tooltip content={<ChartTooltipContent/>}/>
-              <Area type="monotone" dataKey="temperature" stroke={chartConfig.temperature.color} fillOpacity={0.5}
-                    fill={chartConfig.temperature.color}/>
-              <Area type="monotone" dataKey="humidity" stroke={chartConfig.humidity.color} fillOpacity={0.5}
-                    fill={chartConfig.humidity.color}/>
-              <Area type="monotone" dataKey="oxygen" stroke={chartConfig.oxygen.color} fillOpacity={0.5}
-                    fill={chartConfig.oxygen.color}/>
-            </AreaChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
+        <AccordionItem value="historical-data">
+          <AccordionTrigger>Historical Data Visualization</AccordionTrigger>
+          <AccordionContent>
+            <Card>
+              <CardHeader>
+                <CardTitle>Historical Data Visualization</CardTitle>
+                <CardDescription>Visual representation of sensor data over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={chartConfig} className="h-[300px]">
+                  <AreaChart data={historicalData} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
+                    <CartesianGrid strokeDasharray="3 3"/>
+                    <XAxis dataKey="time"/>
+                    <YAxis/>
+                    <Tooltip content={<ChartTooltipContent/>}/>
+                    <Area type="monotone" dataKey="temperature" stroke={chartConfig.temperature.color} fillOpacity={0.5}
+                          fill={chartConfig.temperature.color}/>
+                    <Area type="monotone" dataKey="humidity" stroke={chartConfig.humidity.color} fillOpacity={0.5}
+                          fill={chartConfig.humidity.color}/>
+                    <Area type="monotone" dataKey="oxygen" stroke={chartConfig.oxygen.color} fillOpacity={0.5}
+                          fill={chartConfig.oxygen.color}/>
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
-
