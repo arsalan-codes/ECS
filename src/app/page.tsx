@@ -1,17 +1,17 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getSensorData } from '@/services/sensor';
-import { Icons } from '@/components/icons';
-import { useEffect, useRef, useState } from 'react';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { getFanSpeed, setFanSpeed } from '@/services/fan';
-import { getLightStatus, setLightStatus } from '@/services/lights';
-import { analyzeSensorData } from '@/ai/flows/analyze-sensor-data';
-import { Badge } from '@/components/ui/badge';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/use-toast';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {getSensorData} from '@/services/sensor';
+import {Icons} from '@/components/icons';
+import {useEffect, useRef, useState} from 'react';
+import {Slider} from '@/components/ui/slider';
+import {Switch} from '@/components/ui/switch';
+import {getFanSpeed, setFanSpeed} from '@/services/fan';
+import {getLightStatus, setLightStatus} from '@/services/lights';
+import {analyzeSensorData} from '@/ai/flows/analyze-sensor-data';
+import {Badge} from '@/components/ui/badge';
+import {Toaster} from '@/components/ui/toaster';
+import {useToast} from '@/hooks/use-toast';
 import {
   Chart,
   ChartContainer,
@@ -21,8 +21,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 
 const chartConfig = {
   temperature: {
@@ -39,7 +39,7 @@ const chartConfig = {
   },
 };
 
-function Sensors({ temperature, humidity, oxygen }: { temperature: number, humidity: number, oxygen: number }) {
+function Sensors({temperature, humidity, oxygen}: { temperature: number, humidity: number, oxygen: number }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card>
@@ -49,7 +49,7 @@ function Sensors({ temperature, humidity, oxygen }: { temperature: number, humid
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
-            <Icons.thermometer className="h-4 w-4" />
+            <Icons.thermometer className="h-4 w-4"/>
             {temperature}°C
           </div>
         </CardContent>
@@ -61,7 +61,7 @@ function Sensors({ temperature, humidity, oxygen }: { temperature: number, humid
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
-            <Icons.wind className="h-4 w-4" />
+            <Icons.wind className="h-4 w-4"/>
             {humidity}%
           </div>
         </CardContent>
@@ -73,7 +73,7 @@ function Sensors({ temperature, humidity, oxygen }: { temperature: number, humid
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
-            <Icons.wind className="h-4 w-4" />
+            <Icons.wind className="h-4 w-4"/>
             {oxygen}%
           </div>
         </CardContent>
@@ -89,36 +89,42 @@ export default function Home() {
   const [fanSpeed, setFanSpeedState] = useState<number>(0);
   const [lightStatus, setLightStatusState] = useState<boolean>(false);
   const [aiRecommendation, setAiRecommendation] = useState<{ recommendedFanSpeed: number; explanation: string; } | null>(null);
-  const { toast } = useToast();
-    const [historicalData, setHistoricalData] = useState([
-        { time: '00:00', temperature: 22, humidity: 60, oxygen: 95 },
-        { time: '03:00', temperature: 23, humidity: 62, oxygen: 94 },
-        { time: '06:00', temperature: 24, humidity: 64, oxygen: 93 },
-        { time: '09:00', temperature: 23, humidity: 63, oxygen: 94 },
-        { time: '12:00', temperature: 25, humidity: 65, oxygen: 92 },
-        { time: '15:00', temperature: 26, humidity: 66, oxygen: 91 },
-        { time: '18:00', temperature: 24, humidity: 64, oxygen: 93 },
-        { time: '21:00', temperature: 23, humidity: 63, oxygen: 94 },
-        { time: '24:00', temperature: 22, humidity: 61, oxygen: 95 },
-    ]);
+  const {toast} = useToast();
+  const [historicalData, setHistoricalData] = useState([
+    {time: '00:00', temperature: 22, humidity: 60, oxygen: 95},
+    {time: '03:00', temperature: 23, humidity: 62, oxygen: 94},
+    {time: '06:00', temperature: 24, humidity: 64, oxygen: 93},
+    {time: '09:00', temperature: 23, humidity: 63, oxygen: 94},
+    {time: '12:00', temperature: 25, humidity: 65, oxygen: 92},
+    {time: '15:00', temperature: 26, humidity: 66, oxygen: 91},
+    {time: '18:00', temperature: 24, humidity: 64, oxygen: 93},
+    {time: '21:00', temperature: 23, humidity: 63, oxygen: 94},
+    {time: '24:00', temperature: 22, humidity: 61, oxygen: 95},
+  ]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [useCamera, setUseCamera] = useState(false);
 
-    const cameraFeeds = [
-        'camera1',
-        'camera2',
-        'camera3',
-        'camera4',
-        'camera5',
-        'camera6',
-        'camera7',
-        'camera8',
-    ]; // Replace with your actual camera identifiers
+  const cameraFeeds = [
+    'camera1',
+    'camera2',
+    'camera3',
+    'camera4',
+    'camera5',
+    'camera6',
+    'camera7',
+    'camera8',
+  ]; // Replace with your actual camera identifiers
 
 
   useEffect(() => {
     const getCameraPermission = async () => {
+      if (!useCamera) {
+        setHasCameraPermission(true);
+        return;
+      }
+
       try {
         const stream = await navigator.mediaDevices.getUserMedia({video: true});
         setHasCameraPermission(true);
@@ -138,7 +144,7 @@ export default function Home() {
     };
 
     getCameraPermission();
-  }, []);
+  }, [useCamera, toast]);
 
 
   useEffect(() => {
@@ -164,7 +170,7 @@ export default function Home() {
   const handleFanSpeedChange = async (value: number[]) => {
     const newSpeed = value[0];
     setFanSpeedState(newSpeed);
-    await setFanSpeed({ speed: newSpeed });
+    await setFanSpeed({speed: newSpeed});
     toast({
       title: "Fan speed updated.",
       description: `Fan speed set to ${newSpeed}%.`,
@@ -173,7 +179,7 @@ export default function Home() {
 
   const handleLightStatusChange = async (checked: boolean) => {
     setLightStatusState(checked);
-    await setLightStatus({ isOn: checked });
+    await setLightStatus({isOn: checked});
     toast({
       title: "Light status updated.",
       description: `Lights ${checked ? 'turned on' : 'turned off'}.`,
@@ -187,7 +193,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col p-4 gap-4">
-      <Toaster />
+      <Toaster/>
 
       <Card>
         <CardHeader>
@@ -201,15 +207,15 @@ export default function Home() {
         </CardContent>
       </Card>
 
-        <Card>
-            <CardHeader>
-                <CardTitle>Sensors</CardTitle>
-                <CardDescription>Real-time sensor data</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} />
-            </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Sensors</CardTitle>
+          <CardDescription>Real-time sensor data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen}/>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
@@ -238,7 +244,7 @@ export default function Home() {
           <CardContent>
             <div className="flex items-center justify-between">
               <span>Lights are: {lightStatus ? 'On' : 'Off'}</span>
-              <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange} />
+              <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
             </div>
           </CardContent>
         </Card>
@@ -262,28 +268,32 @@ export default function Home() {
       </Card>
 
       <Card>
-          <CardHeader>
-              <CardTitle>Camera Monitoring</CardTitle>
-              <CardDescription>Live camera feeds</CardDescription>
-          </CardHeader>
-          <CardContent>
-              {cameraFeeds.map((camera, index) => (
-                  <div key={index} className="mb-4">
-                      <p>Camera {index + 1}</p>
-                      <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
-                  </div>
-              ))}
+        <CardHeader>
+          <CardTitle>Camera Monitoring</CardTitle>
+          <CardDescription>Live camera feeds</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between mb-4">
+            <span>Use Camera:</span>
+            <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
+          </div>
+          {cameraFeeds.map((camera, index) => (
+            <div key={index} className="mb-4">
+              <p>Camera {index + 1}</p>
+              <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted/>
+            </div>
+          ))}
 
-              { !(hasCameraPermission) && (
-                  <Alert variant="destructive">
-                            <AlertTitle>Camera Access Required</AlertTitle>
-                            <AlertDescription>
-                              Please allow camera access to use this feature.
-                            </AlertDescription>
-                    </Alert>
-              )
-              }
-          </CardContent>
+          {useCamera && !(hasCameraPermission) && (
+            <Alert variant="destructive">
+              <AlertTitle>Camera Access Required</AlertTitle>
+              <AlertDescription>
+                Please allow camera access to use this feature.
+              </AlertDescription>
+            </Alert>
+          )
+          }
+        </CardContent>
       </Card>
 
 
@@ -294,14 +304,17 @@ export default function Home() {
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[300px]">
-            <AreaChart data={historicalData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" />
-              <YAxis />
-              <Tooltip content={<ChartTooltipContent />} />
-              <Area type="monotone" dataKey="temperature" stroke={chartConfig.temperature.color} fillOpacity={0.5} fill={chartConfig.temperature.color} />
-              <Area type="monotone" dataKey="humidity" stroke={chartConfig.humidity.color} fillOpacity={0.5} fill={chartConfig.humidity.color} />
-              <Area type="monotone" dataKey="oxygen" stroke={chartConfig.oxygen.color} fillOpacity={0.5} fill={chartConfig.oxygen.color} />
+            <AreaChart data={historicalData} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
+              <CartesianGrid strokeDasharray="3 3"/>
+              <XAxis dataKey="time"/>
+              <YAxis/>
+              <Tooltip content={<ChartTooltipContent/>}/>
+              <Area type="monotone" dataKey="temperature" stroke={chartConfig.temperature.color} fillOpacity={0.5}
+                    fill={chartConfig.temperature.color}/>
+              <Area type="monotone" dataKey="humidity" stroke={chartConfig.humidity.color} fillOpacity={0.5}
+                    fill={chartConfig.humidity.color}/>
+              <Area type="monotone" dataKey="oxygen" stroke={chartConfig.oxygen.color} fillOpacity={0.5}
+                    fill={chartConfig.oxygen.color}/>
             </AreaChart>
           </ChartContainer>
         </CardContent>
@@ -309,3 +322,4 @@ export default function Home() {
     </div>
   );
 }
+
