@@ -386,17 +386,11 @@ export default function Home() {
                   ) : (
                       <p>Loading AI light recommendation...</p>
                   )}
+                        <AIInteraction />
               </CardContent>
             </Card>
           </AccordionContent>
         </AccordionItem>
-
-          <AccordionItem value="ai-assistant">
-            <AccordionTrigger> 🗣️ AI Assistant</AccordionTrigger>
-            <AccordionContent>
-              <AIInteraction />
-            </AccordionContent>
-          </AccordionItem>
 
         <AccordionItem value="camera-monitoring">
           <AccordionTrigger> 📷 Camera Monitoring</AccordionTrigger>
@@ -479,3 +473,4 @@ export default function Home() {
     </div>
   );
 }
+
