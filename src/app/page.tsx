@@ -25,8 +25,6 @@ import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAx
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
 import {analyzeLightData} from '@/ai/flows/analyze-light-data';
-import {Tooltip as ReactTooltip} from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css'
 
 const chartConfig = {
   temperature: {
@@ -151,14 +149,14 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(false);
   const [cameraFeeds, setCameraFeeds] = useState([
-    'camera1',
-    'camera2',
-    'camera3',
-    'camera4',
-    'camera5',
-    'camera6',
-    'camera7',
-    'camera8',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
+    'https://picsum.photos/640/480',
   ]);
   const [useCamera, setUseCamera] = useState(false);
 
@@ -265,9 +263,6 @@ export default function Home() {
           <div>
             <CardTitle> 📊 Dashboard</CardTitle>
             <CardDescription>Overview of sensor data</CardDescription>
-          </div>
-          <div className="flex justify-end">
-            <Switch checked={theme} onCheckedChange={toggleTheme} />
           </div>
         </CardHeader>
         <CardContent>
@@ -446,4 +441,5 @@ export default function Home() {
     </div>
   );
 }
+
 
