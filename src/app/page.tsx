@@ -213,7 +213,7 @@ export default function Home() {
   const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
 
   return (
-    <div className="flex flex-col p-4 gap-4">
+    <div className="flex flex-col p-4 gap-4 max-w-7xl mx-auto">
       <Toaster/>
 
       <Card>
@@ -277,6 +277,9 @@ export default function Home() {
                     <span>Lights are: {lightStatus ? 'On' : 'Off'}</span>
                     <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <span>Light intensity: {lux} Lux</span>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -326,12 +329,14 @@ export default function Home() {
                   <span>Use Camera:</span>
                   <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
                 </div>
-                {useCamera && cameraFeeds.map((camera, index) => (
-                  <div key={index} className="mb-4">
-                    <p>Camera {index + 1}</p>
-                    <img src={camera} className="w-full aspect-video rounded-md" />
-                  </div>
-                ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {useCamera && cameraFeeds.map((camera, index) => (
+                    <div key={index} className="mb-4">
+                      <p>Camera {index + 1}</p>
+                      <img src={camera} className="w-full aspect-video rounded-md" alt={`Camera ${index + 1}`} />
+                    </div>
+                  ))}
+                </div>
 
                 {useCamera && !(hasCameraPermission) && (
                   <Alert variant="destructive">
