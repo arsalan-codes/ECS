@@ -376,7 +376,7 @@ export default function Home() {
                 <CardTitle> 🤖 AI-Powered Optimization</CardTitle>
                 <CardDescription>AI recommendation for optimal fan speed</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-4">
                 {aiRecommendation ? (
                   <div className="flex flex-col gap-2">
                     <Badge variant="secondary">Recommended Fan Speed: {aiRecommendation.recommendedFanSpeed}%</Badge>
@@ -480,5 +480,4 @@ export default function Home() {
     </div>
   );
 }
-
 
