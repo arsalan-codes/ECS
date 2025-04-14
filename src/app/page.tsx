@@ -3,7 +3,7 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {getSensorData} from '@/services/sensor';
 import {Icons} from '@/components/icons';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import {Slider} from '@/components/ui/slider';
 import {Switch} from '@/components/ui/switch';
 import {getFanSpeed, setFanSpeed} from '@/services/fan';
@@ -30,6 +30,7 @@ import {Sun, Moon} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {aiAssistant} from "@/ai/flows/ai-assistant";
+import {useTheme} from 'next-themes';
 
 const chartConfig = {
   temperature: {
@@ -188,6 +189,8 @@ export default function Home() {
   const [aiRecommendation, setAiRecommendation] = useState<{ recommendedFanSpeed: number; explanation: string; } | null>(null);
     const [lightRecommendation, setLightRecommendation] = useState<{ recommendedLightStatus: boolean; explanation: string; } | null>(null);
 
+    const {theme, setTheme} = useTheme();
+
   const {toast} = useToast();
   const [historicalData, setHistoricalData] = useState([
     {time: '00:00', temperature: 22, humidity: 60, oxygen: 95},
@@ -302,6 +305,10 @@ export default function Home() {
             <CardTitle> 📊 ECS</CardTitle>
             <CardDescription>Environmental Control System</CardDescription>
           </div>
+                    <Button variant="outline" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+                        {theme === 'light' ? <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" /> : <Sun className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />}
+                        <span className="sr-only">Toggle theme</span>
+                    </Button>
         </CardHeader>
         <CardContent>
           <AnimatedBarChart value={avgTemperature} label="Average Temperature" color="hsl(var(--chart-1))"/>
@@ -477,8 +484,8 @@ export default function Home() {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+        <p className="text-center text-sm text-muted-foreground">Copyright Arsalan Rezazadeh</p>
     </div>
   );
 }
-
 
