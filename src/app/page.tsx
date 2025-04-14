@@ -29,6 +29,7 @@ import {Button} from "@/components/ui/button";
 import {Sun, Moon} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
+import {aiAssistant} from "@/ai/flows/ai-assistant";
 
 const chartConfig = {
   temperature: {
@@ -139,10 +140,16 @@ const AIInteraction = () => {
   const handleSubmit = async () => {
     setLoading(true);
     setAnswer(null);
-    // Simulate an AI response delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setAnswer('This is a simulated AI response.');
-    setLoading(false);
+
+    try {
+      const aiResponse = await aiAssistant({ question });
+      setAnswer(aiResponse.answer);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      setAnswer('Failed to get response from AI.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -473,4 +480,5 @@ export default function Home() {
     </div>
   );
 }
+
 
