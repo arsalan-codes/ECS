@@ -122,14 +122,14 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(false);
   const [cameraFeeds, setCameraFeeds] = useState([
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
-    'https://picsum.photos/400/300',
+    'camera1',
+    'camera2',
+    'camera3',
+    'camera4',
+    'camera5',
+    'camera6',
+    'camera7',
+    'camera8',
   ]);
   const [useCamera, setUseCamera] = useState(false);
 
@@ -358,8 +358,8 @@ export default function Home() {
                 <CardTitle> 📈 Historical Data Visualization</CardTitle>
                 <CardDescription>Visual representation of sensor data over time</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ChartContainer config={chartConfig} className="h-[300px]">
+              <CardContent className="flex flex-col md:flex-row gap-4">
+                <ChartContainer config={chartConfig} className="h-[300px] w-full md:w-1/2">
                   <AreaChart data={historicalData} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
                     <CartesianGrid strokeDasharray="3 3"/>
                     <XAxis dataKey="time"/>
@@ -373,7 +373,7 @@ export default function Home() {
                           fill={chartConfig.oxygen.color}/>
                   </AreaChart>
                 </ChartContainer>
-                <Card>
+                <Card className="w-full md:w-1/2">
                   <CardHeader>
                     <CardTitle>💡 Management Ideas from AI</CardTitle>
                     <CardDescription>AI analysis of sensor data for poultry farm management</CardDescription>
