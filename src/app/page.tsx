@@ -30,18 +30,19 @@ import {Sun, Moon} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {aiAssistant} from "@/ai/flows/ai-assistant";
+import {useRouter} from 'next/navigation';
 
 const chartConfig = {
   temperature: {
-    label: "دما (°C)",
+    label: "Temperature (°C)",
     color: "hsl(var(--chart-1))",
   },
   humidity: {
-    label: "رطوبت (%)",
+    label: "Humidity (%)",
     color: "hsl(var(--chart-2))",
   },
   oxygen: {
-    label: "اکسیژن (%)",
+    label: "Oxygen (%)",
     color: "hsl(var(--chart-3))",
   },
 };
@@ -51,8 +52,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>🌡️ دما</CardTitle>
-          <CardDescription>دمای کنونی بر حسب سانتیگراد</CardDescription>
+          <CardTitle>🌡️ Temperature</CardTitle>
+          <CardDescription>Current temperature in Celsius</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -63,8 +64,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>💧 رطوبت</CardTitle>
-          <CardDescription>درصد رطوبت کنونی</CardDescription>
+          <CardTitle>💧 Humidity</CardTitle>
+          <CardDescription>Current humidity percentage</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -75,8 +76,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>💨 اکسیژن</CardTitle>
-          <CardDescription>سطح اکسیژن کنونی</CardDescription>
+          <CardTitle>💨 Oxygen</CardTitle>
+          <CardDescription>Current oxygen level</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -87,8 +88,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
         <Card>
           <CardHeader>
-            <CardTitle>💡 شدت نور</CardTitle>
-            <CardDescription>شدت نور کنونی بر حسب لوکس</CardDescription>
+            <CardTitle>💡 Light Intensity</CardTitle>
+            <CardDescription>Current light intensity in Lux</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
@@ -118,7 +119,7 @@ const AnimatedBarChart = ({value, label, color}: { value: number, label: string,
   }, [normalizedValue]);
 
   const getUnit = () => {
-    if (label.includes("دما")) return "°C";
+    if (label.includes("Temperature")) return "°C";
     return "%";
   }
 
@@ -166,18 +167,18 @@ const AIInteraction = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>🤖 دستیار هوش مصنوعی</CardTitle>
-        <CardDescription>سوالات خود را بپرسید و از بینش های مبتنی بر هوش مصنوعی بهره مند شوید.</CardDescription>
+        <CardTitle>🤖 AI Assistant</CardTitle>
+        <CardDescription>Ask questions and get AI-powered insights.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Textarea
-          placeholder="هر سوالی درباره داده های مزرعه خود دارید بپرسید..."
+          placeholder="Ask any question about your farm data..."
           value={question}
           onChange={handleQuestionChange}
           className="resize-none"
         />
         <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? 'در حال بارگذاری...' : 'دریافت پاسخ'}
+          {loading ? 'Loading...' : 'Get Answer'}
         </Button>
         {answer && (
           <div className="rounded-md border p-4">
@@ -214,7 +215,7 @@ export default function Home() {
   ]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(false);
+    const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(true);
   const [cameraFeeds, setCameraFeeds] = useState([
     'https://picsum.photos/640/480',
     'https://picsum.photos/640/480',
@@ -246,8 +247,8 @@ export default function Home() {
         setHasCameraPermission(false);
         toast({
           variant: 'destructive',
-          title: 'دسترسی به دوربین رد شد',
-          description: 'لطفاً دسترسی دوربین را در تنظیمات مرورگر خود فعال کنید تا از این برنامه استفاده کنید.',
+          title: 'Camera access denied',
+          description: 'Please enable camera access in your browser settings to use this feature.',
         });
       }
     };
@@ -285,8 +286,8 @@ export default function Home() {
     setFanSpeedState(newSpeed);
     await setFanSpeed({speed: newSpeed});
     toast({
-      title: "سرعت فن بروزرسانی شد.",
-      description: `سرعت فن به ${newSpeed}% تنظیم شد.`,
+      title: "Fan speed updated.",
+      description: `Fan speed set to ${newSpeed}%.`,
     });
   };
 
@@ -294,8 +295,8 @@ export default function Home() {
     setLightStatusState(checked);
     await setLightStatus({isOn: checked});
     toast({
-      title: "وضعیت چراغ بروزرسانی شد.",
-      description: `چراغ ها ${checked ? 'روشن شدند' : 'خاموش شدند'}.`,
+      title: "Light status updated.",
+      description: `Lights ${checked ? 'turned on' : 'turned off'}.`,
     });
   };
 
@@ -312,25 +313,25 @@ export default function Home() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle> 📊 ECS</CardTitle>
-            <CardDescription>سیستم کنترل محیطی</CardDescription>
+            <CardDescription>Environmental Control System</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <AnimatedBarChart value={avgTemperature} label="میانگین دما" color="hsl(var(--chart-1))"/>
-          <AnimatedBarChart value={avgHumidity} label="میانگین رطوبت" color="hsl(var(--chart-2))"/>
-          <AnimatedBarChart value={avgOxygen} label="میانگین اکسیژن" color="hsl(var(--chart-3))"/>
+          <AnimatedBarChart value={avgTemperature} label="Average Temperature" color="hsl(var(--chart-1))"/>
+          <AnimatedBarChart value={avgHumidity} label="Average Humidity" color="hsl(var(--chart-2))"/>
+          <AnimatedBarChart value={avgOxygen} label="Average Oxygen" color="hsl(var(--chart-3))"/>
         </CardContent>
       </Card>
 
       <Accordion type="single" collapsible>
 
         <AccordionItem value="sensors">
-          <AccordionTrigger> 🍃 سنسورها</AccordionTrigger>
+          <AccordionTrigger> 🍃 Sensors</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 🍃 سنسورها</CardTitle>
-                <CardDescription>داده های لحظه ای سنسورها</CardDescription>
+                <CardTitle> 🍃 Sensors</CardTitle>
+                <CardDescription>Real-time sensor data</CardDescription>
               </CardHeader>
               <CardContent>
                 <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} lux={lux}/>
@@ -340,13 +341,13 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="fan-lighting-control">
-          <AccordionTrigger> ⚙️ کنترل فن و روشنایی</AccordionTrigger>
+          <AccordionTrigger> ⚙️ Fan and Lighting Control</AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
-                  <CardTitle> ⚙️ کنترل سرعت فن</CardTitle>
-                  <CardDescription>تنظیم سرعت فن به صورت دستی</CardDescription>
+                  <CardTitle> ⚙️ Fan Speed Control</CardTitle>
+                  <CardDescription>Manually adjust fan speed</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-2">
@@ -356,23 +357,23 @@ export default function Home() {
                       step={1}
                       onValueChange={handleFanSpeedChange}
                     />
-                    <p>سرعت کنونی: {fanSpeed}%</p>
+                    <p>Current speed: {fanSpeed}%</p>
                   </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle> 💡 کنترل روشنایی</CardTitle>
-                  <CardDescription>روشن یا خاموش کردن چراغ ها از راه دور</CardDescription>
+                  <CardTitle> 💡 Lighting Control</CardTitle>
+                  <CardDescription>Remotely control lights</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <span>وضعیت چراغ ها: {lightStatus ? 'روشن' : 'خاموش'}</span>
+                    <span>Light Status: {lightStatus ? 'On' : 'Off'}</span>
                     <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>شدت نور: {lux} Lux</span>
+                    <span>Light intensity: {lux} Lux</span>
                   </div>
                 </CardContent>
               </Card>
@@ -381,29 +382,29 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="ai-optimization">
-          <AccordionTrigger> 🤖 بهینه سازی مبتنی بر هوش مصنوعی</AccordionTrigger>
+          <AccordionTrigger> 🤖 AI-Powered Optimization</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 🤖 بهینه سازی مبتنی بر هوش مصنوعی</CardTitle>
-                <CardDescription>توصیه هوش مصنوعی برای سرعت بهینه فن</CardDescription>
+                <CardTitle> 🤖 AI-Powered Optimization</CardTitle>
+                <CardDescription>AI recommendation for optimal settings</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 {aiRecommendation ? (
                   <div className="flex flex-col gap-2">
-                    <Badge variant="secondary">سرعت فن پیشنهادی: {aiRecommendation.recommendedFanSpeed}%</Badge>
+                    <Badge variant="secondary">Recommended Fan Speed: {aiRecommendation.recommendedFanSpeed}%</Badge>
                     <p>{aiRecommendation.explanation}</p>
                   </div>
                 ) : (
-                  <p>در حال بارگیری توصیه هوش مصنوعی...</p>
+                  <p>Loading AI recommendation...</p>
                 )}
                   {lightRecommendation ? (
                       <div className="flex flex-col gap-2">
-                        <Badge variant="secondary">وضعیت نور پیشنهادی: {lightRecommendation.recommendedLightStatus ? 'روشن' : 'خاموش'}</Badge>
+                        <Badge variant="secondary">Recommended Light Status: {lightRecommendation.recommendedLightStatus ? 'On' : 'Off'}</Badge>
                         <p>{lightRecommendation.explanation}</p>
                       </div>
                   ) : (
-                      <p>در حال بارگیری توصیه نور هوش مصنوعی...</p>
+                      <p>Loading AI light recommendation...</p>
                   )}
                                 <AIInteraction />
               </CardContent>
@@ -412,22 +413,22 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="camera-monitoring">
-          <AccordionTrigger> 📷 نظارت دوربین</AccordionTrigger>
+          <AccordionTrigger> 📷 Camera Monitoring</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 📷 نظارت دوربین</CardTitle>
-                <CardDescription>فیدهای زنده دوربین</CardDescription>
+                <CardTitle> 📷 Camera Monitoring</CardTitle>
+                <CardDescription>Live camera feeds</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between mb-4">
-                  <span>استفاده از دوربین:</span>
+                  <span>Use Camera:</span>
                   <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {useCamera && cameraFeeds.map((camera, index) => (
                     <div key={index} className="mb-4">
-                      <p>دوربین {index + 1}</p>
+                      <p>Camera {index + 1}</p>
                       <img src={camera} className="w-full aspect-video rounded-md" alt={`Camera ${index + 1}`} />
                     </div>
                   ))}
@@ -435,9 +436,9 @@ export default function Home() {
 
                 {useCamera && !(hasCameraPermission) && (
                   <Alert variant="destructive">
-                    <AlertTitle>دسترسی به دوربین مورد نیاز است</AlertTitle>
+                    <AlertTitle>Camera Access Required</AlertTitle>
                     <AlertDescription>
-                      لطفاً برای استفاده از این ویژگی، دسترسی به دوربین را مجاز کنید.
+                      Please allow camera access to use this feature.
                     </AlertDescription>
                   </Alert>
                 )
@@ -448,12 +449,12 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="historical-data">
-          <AccordionTrigger> 📈 تجسم داده های تاریخی</AccordionTrigger>
+          <AccordionTrigger> 📈 Historical Data Visualization</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 📈 تجسم داده های تاریخی</CardTitle>
-                <CardDescription>نمایش بصری داده های سنسور در طول زمان</CardDescription>
+                <CardTitle> 📈 Historical Data Visualization</CardTitle>
+                <CardDescription>Visual representation of sensor data over time</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col md:flex-row gap-4">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full md:w-1/2">
@@ -472,15 +473,15 @@ export default function Home() {
                 </ChartContainer>
                 <Card className="w-full md:w-1/2">
                   <CardHeader>
-                    <CardTitle>💡 ایده های مدیریتی از هوش مصنوعی</CardTitle>
-                    <CardDescription>تجزیه و تحلیل هوش مصنوعی از داده های سنسور برای مدیریت مزرعه طیور</CardDescription>
+                    <CardTitle>💡 Management Ideas from AI</CardTitle>
+                    <CardDescription>AI analysis of sensor data for poultry farm management</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>بر اساس داده های تاریخی، هوش مصنوعی پیشنهاد می کند:</p>
+                    <p>Based on historical data, AI suggests:</p>
                     <ul>
-                      <li>بهینه سازی برنامه های تغذیه در ساعات اوج دما.</li>
-                      <li>تنظیم تهویه برای حفظ سطح رطوبت ثابت.</li>
-                      <li>نظارت بر سطح اکسیژن در طول شب برای جلوگیری از هیپوکسی.</li>
+                      <li>Optimizing feeding schedules during peak temperature hours.</li>
+                      <li>Adjusting ventilation to maintain consistent humidity levels.</li>
+                      <li>Monitoring oxygen levels during nighttime to prevent hypoxia.</li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -489,7 +490,7 @@ export default function Home() {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-        <p className="text-center text-sm text-muted-foreground">طراحی‌و‌توسعه 🌍‌ ارسلان رضازاده</p>
+        <p className="text-center text-sm text-muted-foreground">Copyright © 2024 Arsalan Rezazadeh</p>
     </div>
   );
 }
