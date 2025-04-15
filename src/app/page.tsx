@@ -30,12 +30,12 @@ import {Sun, Moon} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {aiAssistant} from "@/ai/flows/ai-assistant";
-import {useRouter} from 'next/navigation';
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import { useTheme } from 'next-themes';
 import { siteConfig } from '@/config/site';
 import { languages } from '@/config/i18n';
 import {translations} from "@/lib/translate";
+import {useRouter} from "next/navigation";
 
 const chartConfig = {
   temperature: {
@@ -300,7 +300,7 @@ export default function Home() {
     await setLightStatus({isOn: checked});
     toast({
       title: 'Light status updated.',
-      description: `Lights ${checked ? 'turned on' : 'turned off'}.`,
+      description: `Lights ${checked ? 'turned on' : 'off'}.`,
     });
   };
 
@@ -522,4 +522,3 @@ export default function Home() {
     </div>
   );
 }
-
