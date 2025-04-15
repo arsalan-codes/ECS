@@ -35,6 +35,7 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import { useTheme } from 'next-themes';
 import { siteConfig } from '@/config/site';
 import { languages } from '@/config/i18n';
+import {translations} from "@/lib/translate";
 
 const chartConfig = {
   temperature: {
@@ -51,13 +52,13 @@ const chartConfig = {
   },
 };
 
-function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, humidity: number, oxygen: number, lux: number }) {
+function Sensors({temperature, humidity, oxygen, lux, t}: { temperature: number, humidity: number, oxygen: number, lux: number, t: any }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Temperature</CardTitle>
-          <CardDescription>Current temperature in Celsius</CardDescription>
+          <CardTitle>{t.Sensors.temperatureTitle}</CardTitle>
+          <CardDescription>{t.Sensors.temperatureDescription}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -68,8 +69,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Humidity</CardTitle>
-          <CardDescription>Current humidity percentage</CardDescription>
+          <CardTitle>{t.Sensors.humidityTitle}</CardTitle>
+          <CardDescription>{t.Sensors.humidityDescription}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -80,8 +81,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Oxygen</CardTitle>
-          <CardDescription>Current oxygen level</CardDescription>
+          <CardTitle>{t.Sensors.oxygenTitle}</CardTitle>
+          <CardDescription>{t.Sensors.oxygenDescription}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -92,8 +93,8 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Light Intensity</CardTitle>
-            <CardDescription>Current light intensity in Lux</CardDescription>
+            <CardTitle>{t.Sensors.lightIntensityTitle}</CardTitle>
+            <CardDescription>{t.Sensors.lightIntensityDescription}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
@@ -144,7 +145,7 @@ const AnimatedBarChart = ({value, label, color}: { value: number, label: string,
   );
 };
 
-const AIInteraction = () => {
+const AIInteraction = ({t}: {t: any}) => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -162,7 +163,7 @@ const AIInteraction = () => {
       setAnswer(aiResponse.answer);
     } catch (error) {
       console.error('Error getting AI response:', error);
-      setAnswer('Failed to get response from AI.');
+      setAnswer(t.AI.errorResponse);
     } finally {
       setLoading(false);
     }
@@ -171,18 +172,18 @@ const AIInteraction = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>🤖 AI Assistant</CardTitle>
-        <CardDescription>Ask questions and get AI-powered insights.</CardDescription>
+        <CardTitle>🤖 {t.AI.aiAssistant}</CardTitle>
+        <CardDescription>{t.AI.aiDescription}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Textarea
-          placeholder="Ask any question about your farm data..."
+          placeholder={t.AI.aiPlaceholder}
           value={question}
           onChange={handleQuestionChange}
           className="resize-none"
         />
         <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Loading...' : 'Get Answer'}
+          {loading ? t.AI.loading : t.AI.getAnswer}
         </Button>
         {answer && (
           <div className="rounded-md border p-4">
@@ -216,7 +217,7 @@ export default function Home() {
     {time: '24:00', temperature: 22, humidity: 61, oxygen: 95},
   ]);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(true);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(false);
   const [cameraFeeds, setCameraFeeds] = useState([
     'https://picsum.photos/640/480',
     'https://picsum.photos/640/480',
@@ -307,7 +308,7 @@ export default function Home() {
   const avgHumidity = historicalData.reduce((acc, data) => acc + data.humidity, 0) / historicalData.length;
   const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
 
-  const handleLocaleChange = (newLocale: string) => {
+    const handleLocaleChange = (newLocale: string) => {
         setLocale(newLocale);
 
         router.push('/', { locale: newLocale });
@@ -317,6 +318,8 @@ export default function Home() {
         return locale === 'fa' ? 'rtl' : 'ltr';
     };
 
+    const t = translations[locale as keyof typeof translations];
+
 
   return (
     <div className="flex flex-col p-4 gap-4 max-w-5xl md:max-w-5xl mx-auto" dir={getDirection()}>
@@ -324,8 +327,8 @@ export default function Home() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle> 📊 ECS</CardTitle>
-            <CardDescription>Environmental Control System</CardDescription>
+            <CardTitle> 📊 {t.Index.dashboardTitle}</CardTitle>
+            <CardDescription>{t.Index.dashboardDescription}</CardDescription>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -343,36 +346,36 @@ export default function Home() {
           </DropdownMenu>
         </CardHeader>
         <CardContent className="flex flex-row gap-4">
-          <AnimatedBarChart value={avgTemperature} label="Average Temperature" color="hsl(var(--chart-1))"/>
-          <AnimatedBarChart value={avgHumidity} label="Average Humidity" color="hsl(var(--chart-2))"/>
-          <AnimatedBarChart value={avgOxygen} label="Average Oxygen" color="hsl(var(--chart-3))"/>
+          <AnimatedBarChart value={avgTemperature} label={t.Index.averageTemperature} color="hsl(var(--chart-1))"/>
+          <AnimatedBarChart value={avgHumidity} label={t.Index.averageHumidity} color="hsl(var(--chart-2))"/>
+          <AnimatedBarChart value={avgOxygen} label={t.Index.averageOxygen} color="hsl(var(--chart-3))"/>
         </CardContent>
       </Card>
 
       <Accordion type="single" collapsible>
         <AccordionItem value="sensors">
-          <AccordionTrigger> 🍃 Sensors</AccordionTrigger>
+          <AccordionTrigger> 🍃 {t.Index.sensorsSection}</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 🍃 Sensors</CardTitle>
-                <CardDescription>Real-time sensor data</CardDescription>
+                <CardTitle> 🍃 {t.Index.sensorsTitle}</CardTitle>
+                <CardDescription>{t.Index.sensorsDescription}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} lux={lux}/>
+                <Sensors temperature={temperature} humidity={humidity} oxygen={oxygen} lux={lux} t={t}/>
               </CardContent>
             </Card>
           </AccordionContent>
         </AccordionItem>
 
         <AccordionItem value="fan-lighting-control">
-          <AccordionTrigger> ⚙️ Fan and Lighting Control</AccordionTrigger>
+          <AccordionTrigger> ⚙️ {t.Index.fanLightingControlSection}</AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>
-                  <CardTitle> ⚙️ Fan Speed Control</CardTitle>
-                  <CardDescription>Manually adjust fan speed</CardDescription>
+                  <CardTitle> ⚙️ {t.Index.fanSpeedControlTitle}</CardTitle>
+                  <CardDescription>{t.Index.fanSpeedControlDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-col gap-2">
@@ -382,23 +385,23 @@ export default function Home() {
                       step={1}
                       onValueChange={handleFanSpeedChange}
                     />
-                    <p>Current speed: {fanSpeed}%</p>
+                    <p>{t.Index.currentSpeed}: {fanSpeed}%</p>
                   </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle> 💡 Lighting Control</CardTitle>
-                  <CardDescription>Remotely control lights</CardDescription>
+                  <CardTitle> 💡 {t.Index.lightingControlTitle}</CardTitle>
+                  <CardDescription>{t.Index.lightingControlDescription}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <span>Light status: {lightStatus ? 'on' : 'off'}</span>
-                    <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
+                    <span>{t.Index.lightIntensity}: {lux} Lux</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span>Light intensity: {lux} Lux</span>
+                    <span>Light status: {lightStatus ? 'on' : 'off'}</span>
+                    <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
                   </div>
                 </CardContent>
               </Card>
@@ -407,12 +410,12 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="ai-optimization">
-          <AccordionTrigger> 🤖 AI-Powered Optimization</AccordionTrigger>
+          <AccordionTrigger> 🤖 {t.Index.aiOptimizationSection}</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 🤖 AI-Powered Optimization</CardTitle>
-                <CardDescription>AI recommendation for optimal settings</CardDescription>
+                <CardTitle> 🤖 {t.Index.aiOptimizationTitle}</CardTitle>
+                <CardDescription>{t.Index.aiOptimizationDescription}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
                 {aiRecommendation ? (
@@ -421,7 +424,7 @@ export default function Home() {
                     <p>{aiRecommendation.explanation}</p>
                   </div>
                 ) : (
-                  <p>Loading AI recommendation...</p>
+                  <p>{t.Index.loadingRecommendation}...</p>
                 )}
                   {lightRecommendation ? (
                       <div className="flex flex-col gap-2">
@@ -429,41 +432,41 @@ export default function Home() {
                         <p>{lightRecommendation.explanation}</p>
                       </div>
                   ) : (
-                      <p>Loading AI recommendation...</p>
+                      <p>{t.Index.loadingRecommendation}...</p>
                   )}
-                                <AIInteraction />
+                  <AIInteraction t={t} />
               </CardContent>
             </Card>
           </AccordionContent>
         </AccordionItem>
 
         <AccordionItem value="camera-monitoring">
-          <AccordionTrigger> 📷 Camera Monitoring</AccordionTrigger>
+          <AccordionTrigger> 📷 {t.Index.cameraMonitoringSection}</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 📷 Camera Monitoring</CardTitle>
-                <CardDescription>Live camera feeds</CardDescription>
+                <CardTitle> 📷 {t.Index.cameraMonitoringTitle}</CardTitle>
+                <CardDescription>{t.Index.cameraMonitoringDescription}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between mb-4">
-                  <span>Use Camera:</span>
+                  <span>{t.Index.useCamera}:</span>
                   <Switch checked={useCamera} onCheckedChange={setUseCamera}/>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {useCamera && cameraFeeds.map((camera, index) => (
                     <div key={index} className="mb-4">
-                      <p>Camera {index + 1}</p>
-                      <img src={camera} className="w-full aspect-video rounded-md" alt={`Camera ${index + 1}`} />
+                      <p>{t.Index.camera} {index + 1}</p>
+                      <img src={camera} className="w-full aspect-video rounded-md" alt={`${t.Index.camera} ${index + 1}`} />
                     </div>
                   ))}
                 </div>
 
                 {useCamera && !(hasCameraPermission) && (
                   <Alert variant="destructive">
-                    <AlertTitle>Camera Access Required</AlertTitle>
+                    <AlertTitle>{t.Index.cameraAccessRequired}</AlertTitle>
                     <AlertDescription>
-                      Please allow camera access to use this feature.
+                      {t.Index.cameraAccessDescription}
                     </AlertDescription>
                   </Alert>
                 )
@@ -474,12 +477,12 @@ export default function Home() {
         </AccordionItem>
 
         <AccordionItem value="historical-data">
-          <AccordionTrigger> 📈 Historical Data Visualization</AccordionTrigger>
+          <AccordionTrigger> 📈 {t.Index.historicalDataSection}</AccordionTrigger>
           <AccordionContent>
             <Card>
               <CardHeader>
-                <CardTitle> 📈 Historical Data Visualization</CardTitle>
-                <CardDescription>Visual representation of sensor data over time</CardDescription>
+                <CardTitle> 📈 {t.Index.historicalDataTitle}</CardTitle>
+                <CardDescription>{t.Index.historicalDataDescription}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col md:flex-row gap-4">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full md:w-1/2">
@@ -498,15 +501,15 @@ export default function Home() {
                 </ChartContainer>
                 <Card className="w-full md:w-1/2">
                   <CardHeader>
-                    <CardTitle>💡 Management Ideas from AI</CardTitle>
-                    <CardDescription>AI analysis of sensor data for poultry farm management</CardDescription>
+                    <CardTitle>💡 {t.Index.managementIdeasTitle}</CardTitle>
+                    <CardDescription>{t.Index.managementIdeasDescription}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>Based on historical data, AI suggests:</p>
+                    <p>{t.Index.aiSuggestion}</p>
                     <ul>
-                      <li>Optimizing feeding schedules during peak temperature hours.</li>
-                      <li>Adjusting ventilation to maintain consistent humidity levels.</li>
-                      <li>Monitoring oxygen levels during nighttime to prevent hypoxia.</li>
+                      <li>{t.Index.suggestion1}</li>
+                      <li>{t.Index.suggestion2}</li>
+                      <li>{t.Index.suggestion3}</li>
                     </ul>
                   </CardContent>
                 </Card>
