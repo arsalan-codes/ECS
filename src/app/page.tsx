@@ -106,17 +106,23 @@ const AnimatedBarChart = ({value, label, color}: { value: number, label: string,
   const barRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
+  const minHeat = 15;
+  const maxHeat = 37.8;
+
+    // Normalize the temperature to a 0-100 scale based on minHeat and maxHeat
+    const normalizedValue = Math.max(0, Math.min(100, ((value - minHeat) / (maxHeat - minHeat)) * 100));
+
   useEffect(() => {
     if (barRef.current) {
-      setWidth(value);
+      setWidth(normalizedValue);
     }
-  }, [value]);
+  }, [normalizedValue]);
 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between text-sm">
         <span>{label}</span>
-        <span>{Math.round(value)}%</span>
+        <span>{Math.round(value)}°C</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div
@@ -479,9 +485,10 @@ export default function Home() {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-        <p className="text-center text-sm text-muted-foreground">Copyright Arsalan Rezazadeh</p>
+        <p className="text-center text-sm text-muted-foreground">طراحی‌و‌توسعه 🌍‌ ارسلان رضازاده</p>
     </div>
   );
 }
+
 
 
