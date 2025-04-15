@@ -31,6 +31,10 @@ import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {aiAssistant} from "@/ai/flows/ai-assistant";
 import {useRouter} from 'next/navigation';
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import { useTheme } from 'next-themes';
+import { siteConfig } from '@/config/site';
+import { languages } from '@/config/i18n';
 
 const chartConfig = {
   temperature: {
@@ -52,7 +56,7 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>🌡️ Temperature</CardTitle>
+          <CardTitle>Temperature</CardTitle>
           <CardDescription>Current temperature in Celsius</CardDescription>
         </CardHeader>
         <CardContent>
@@ -64,7 +68,7 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>💧 Humidity</CardTitle>
+          <CardTitle>Humidity</CardTitle>
           <CardDescription>Current humidity percentage</CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,7 +80,7 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>💨 Oxygen</CardTitle>
+          <CardTitle>Oxygen</CardTitle>
           <CardDescription>Current oxygen level</CardDescription>
         </CardHeader>
         <CardContent>
@@ -88,7 +92,7 @@ function Sensors({temperature, humidity, oxygen, lux}: { temperature: number, hu
       </Card>
         <Card>
           <CardHeader>
-            <CardTitle>💡 Light Intensity</CardTitle>
+            <CardTitle>Light Intensity</CardTitle>
             <CardDescription>Current light intensity in Lux</CardDescription>
           </CardHeader>
           <CardContent>
@@ -199,8 +203,6 @@ export default function Home() {
   const [lightStatus, setLightStatusState] = useState<boolean>(false);
   const [aiRecommendation, setAiRecommendation] = useState<{ recommendedFanSpeed: number; explanation: string; } | null>(null);
     const [lightRecommendation, setLightRecommendation] = useState<{ recommendedLightStatus: boolean; explanation: string; } | null>(null);
-
-
   const {toast} = useToast();
   const [historicalData, setHistoricalData] = useState([
     {time: '00:00', temperature: 22, humidity: 60, oxygen: 95},
@@ -213,9 +215,8 @@ export default function Home() {
     {time: '21:00', temperature: 23, humidity: 63, oxygen: 94},
     {time: '24:00', temperature: 22, humidity: 61, oxygen: 95},
   ]);
-
   const videoRef = useRef<HTMLVideoElement>(null);
-    const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(true);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>(true);
   const [cameraFeeds, setCameraFeeds] = useState([
     'https://picsum.photos/640/480',
     'https://picsum.photos/640/480',
@@ -226,7 +227,10 @@ export default function Home() {
     'https://picsum.photos/640/480',
     'https://picsum.photos/640/480',
   ]);
-  const [useCamera, setUseCamera] = useState(false);
+    const [useCamera, setUseCamera] = useState(false);
+    const [locale, setLocale] = useState('en');
+    const { theme, setTheme } = useTheme();
+    const router = useRouter();
 
   useEffect(() => {
     const getCameraPermission = async () => {
@@ -255,7 +259,6 @@ export default function Home() {
 
     getCameraPermission();
   }, [useCamera, toast]);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -286,7 +289,7 @@ export default function Home() {
     setFanSpeedState(newSpeed);
     await setFanSpeed({speed: newSpeed});
     toast({
-      title: "Fan speed updated.",
+      title: 'Fan speed updated.',
       description: `Fan speed set to ${newSpeed}%.`,
     });
   };
@@ -295,7 +298,7 @@ export default function Home() {
     setLightStatusState(checked);
     await setLightStatus({isOn: checked});
     toast({
-      title: "Light status updated.",
+      title: 'Light status updated.',
       description: `Lights ${checked ? 'turned on' : 'turned off'}.`,
     });
   };
@@ -304,11 +307,20 @@ export default function Home() {
   const avgHumidity = historicalData.reduce((acc, data) => acc + data.humidity, 0) / historicalData.length;
   const avgOxygen = historicalData.reduce((acc, data) => acc + data.oxygen, 0) / historicalData.length;
 
+  const handleLocaleChange = (newLocale: string) => {
+        setLocale(newLocale);
+
+        router.push('/', { locale: newLocale });
+  };
+
+    const getDirection = () => {
+        return locale === 'fa' ? 'rtl' : 'ltr';
+    };
+
 
   return (
-    <div className="flex flex-col p-4 gap-4 max-w-5xl md:max-w-5xl mx-auto">
+    <div className="flex flex-col p-4 gap-4 max-w-5xl md:max-w-5xl mx-auto" dir={getDirection()}>
       <Toaster/>
-
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
@@ -316,7 +328,7 @@ export default function Home() {
             <CardDescription>Environmental Control System</CardDescription>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-row gap-4">
           <AnimatedBarChart value={avgTemperature} label="Average Temperature" color="hsl(var(--chart-1))"/>
           <AnimatedBarChart value={avgHumidity} label="Average Humidity" color="hsl(var(--chart-2))"/>
           <AnimatedBarChart value={avgOxygen} label="Average Oxygen" color="hsl(var(--chart-3))"/>
@@ -324,7 +336,6 @@ export default function Home() {
       </Card>
 
       <Accordion type="single" collapsible>
-
         <AccordionItem value="sensors">
           <AccordionTrigger> 🍃 Sensors</AccordionTrigger>
           <AccordionContent>
@@ -369,7 +380,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <span>Light Status: {lightStatus ? 'On' : 'Off'}</span>
+                    <span>Light status: {lightStatus ? 'on' : 'off'}</span>
                     <Switch checked={lightStatus} onCheckedChange={handleLightStatusChange}/>
                   </div>
                   <div className="flex items-center justify-between">
@@ -400,11 +411,11 @@ export default function Home() {
                 )}
                   {lightRecommendation ? (
                       <div className="flex flex-col gap-2">
-                        <Badge variant="secondary">Recommended Light Status: {lightRecommendation.recommendedLightStatus ? 'On' : 'Off'}</Badge>
+                        <Badge variant="secondary">Recommended Light Status: {lightRecommendation.recommendedLightStatus ? 'on' : 'off'}</Badge>
                         <p>{lightRecommendation.explanation}</p>
                       </div>
                   ) : (
-                      <p>Loading AI light recommendation...</p>
+                      <p>Loading AI recommendation...</p>
                   )}
                                 <AIInteraction />
               </CardContent>
@@ -494,3 +505,4 @@ export default function Home() {
     </div>
   );
 }
+
