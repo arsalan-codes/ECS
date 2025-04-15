@@ -330,20 +330,25 @@ export default function Home() {
             <CardTitle> 📊 {t.Index.dashboardTitle}</CardTitle>
             <CardDescription>{t.Index.dashboardDescription}</CardDescription>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                🌐 {locale}
+            <div className="flex gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      🌐 {locale}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {languages.map((lang) => (
+                      <DropdownMenuItem key={lang} onClick={() => handleLocaleChange(lang)}>
+                        {lang}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              <Button variant="outline" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+                {theme === 'light' ? <Moon/> : <Sun/>}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {languages.map((lang) => (
-                <DropdownMenuItem key={lang} onClick={() => handleLocaleChange(lang)}>
-                  {lang}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
         </CardHeader>
         <CardContent className="flex flex-row gap-4">
           <AnimatedBarChart value={avgTemperature} label={t.Index.averageTemperature} color="hsl(var(--chart-1))"/>
@@ -522,3 +527,4 @@ export default function Home() {
     </div>
   );
 }
+
