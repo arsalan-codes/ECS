@@ -118,11 +118,16 @@ const AnimatedBarChart = ({value, label, color}: { value: number, label: string,
     }
   }, [normalizedValue]);
 
+  const getUnit = () => {
+    if (label.includes("Temperature")) return "°C";
+    return "%";
+  }
+
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between text-sm">
         <span>{label}</span>
-        <span>{Math.round(value)}°C</span>
+        <span>{Math.round(value)}{getUnit()}</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div
@@ -489,6 +494,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 
