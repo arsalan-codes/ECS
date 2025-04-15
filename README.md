@@ -1,32 +1,23 @@
-# Firebase Studio - Smart Home Automation Dashboard
+# Environmental Control System (ECS)
 
-Firebase Studio is a web application built with Next.js designed to serve as a comprehensive dashboard for smart home automation. It integrates various services and sensors to provide a centralized control and monitoring interface for your home environment.
+The **Environmental Control System (ECS)** is a smart application designed to monitor and optimize the environmental conditions within a specified area. It provides real-time data on temperature, humidity, and oxygen levels, helping ensure an optimal atmosphere for various environments such as laboratories, greenhouses, or data centers.
 
 ## Features
 
-*   **Device Control**: Manage and control connected devices such as lights and fans.
-*   **Sensor Monitoring**: Monitor environmental data from various sensors.
-*   **AI Assistant**: An intelligent AI assistant helps analyze sensor data and provides insights.
-*   **Multi-language Support**: Translated to both English and Farsi.
+- **Real-Time Environmental Data Monitoring**
+  - **Temperature**: Tracks the average temperature in the environment (currently set to 24°C).
+  - **Humidity**: Monitors the average humidity levels (currently set to 63%).
+  - **Oxygen Levels**: Provides information on the oxygen concentration (currently 93%).
 
-## AI Assistant
+- **Fan and Lighting Control**
+  - Automatically adjusts the fans and lighting based on environmental data to maintain ideal conditions.
 
-The built-in AI assistant is a key feature of Firebase Studio. It leverages advanced algorithms to:
+- **AI-Powered Optimization**
+  - Utilizes machine learning algorithms to analyze environmental data and optimize settings for energy efficiency and performance.
 
-*   **Analyze Sensor Data**: The AI analyzes data from connected sensors to detect patterns and anomalies.
-*   **Provide Insights**: It offers intelligent suggestions and notifications based on the analyzed data.
-*   **Enhance Automation**: By understanding the context of sensor data, the AI helps to automate tasks and make your home smarter.
+- **Camera Monitoring**
+  - Provides live camera feed for remote monitoring of the environment.
 
-## Multi-language
+- **Historical Data Visualization**
+  - View and analyze historical environmental data through interactive graphs and charts to track trends over time.
 
-Firebase Studio is fully localized, supporting both English and Farsi. The translations are available in these files:
-
-*   `src/locales/en.json` : English translations
-*   `src/locales/fa.json` : Farsi translations
-
-## Getting Started
-
-1.  Clone the repository.
-2.  Install dependencies: `npm install` or `yarn install` or `pnpm install`
-3.  Run the development server: `npm run dev` or `yarn dev` or `pnpm dev`
-4.  Open [http://localhost:3000](http://localhost:3000) in your browser to view the dashboard.
