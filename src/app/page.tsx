@@ -231,6 +231,12 @@ export default function Home() {
     const [useCamera, setUseCamera] = useState(false);
     const [locale, setLocale] = useState('en');
     const { theme, setTheme } = useTheme();
+
+    useEffect(() => {
+        // Set initial theme on mount (client-side)
+        setTheme('dark');
+    }, []);
+
     const router = useRouter();
 
   useEffect(() => {
