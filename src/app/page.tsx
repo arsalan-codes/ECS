@@ -327,6 +327,20 @@ export default function Home() {
             <CardTitle> 📊 ECS</CardTitle>
             <CardDescription>Environmental Control System</CardDescription>
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                🌐 {locale}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {languages.map((lang) => (
+                <DropdownMenuItem key={lang} onClick={() => handleLocaleChange(lang)}>
+                  {lang}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </CardHeader>
         <CardContent className="flex flex-row gap-4">
           <AnimatedBarChart value={avgTemperature} label="Average Temperature" color="hsl(var(--chart-1))"/>
